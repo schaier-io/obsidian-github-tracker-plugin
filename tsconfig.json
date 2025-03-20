@@ -1,0 +1,22 @@
+{
+	"compilerOptions": {
+		"target": "ES6",
+		"module": "ESNext",
+		"moduleResolution": "node",
+		"lib": ["DOM", "ES5", "ES6", "ES7"],
+		"allowJs": true,
+		"checkJs": true,
+		"declaration": true,
+		"sourceMap": true,
+		"outDir": "./dist",
+		"rootDir": "./src",
+		"strict": true,
+		"noImplicitAny": true,
+		"esModuleInterop": true,
+		"skipLibCheck": true,
+		"forceConsistentCasingInFileNames": true,
+		"types": ["jest", "node"]
+	},
+	"include": ["src/**/*.ts"],
+	"exclude": ["node_modules", "dist"]
+}

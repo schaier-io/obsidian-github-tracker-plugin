@@ -1,0 +1,11 @@
+{
+	"id": "github-tracker",
+	"name": "GitHub Tracker",
+	"version": "1.0.0",
+	"minAppVersion": "0.15.0",
+	"description": "Track GitHub issues and pull requests in your vault",
+	"author": "schaier-io",
+	"authorUrl": "https://github.com/schaier-io",
+	"fundingUrl": "https://github.com/schaier-io",
+	"isDesktopOnly": true
+}

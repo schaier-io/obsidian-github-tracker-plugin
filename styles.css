@@ -1,0 +1,186 @@
+/*
+
+This CSS file will be included with your plugin, and
+available in the app when your plugin is enabled.
+
+If your plugin does not need CSS, delete this file.
+
+*/
+
+/*
+ * GitHub Tracker Plugin for Obsidian
+ * CSS styles for the plugin UI elements
+ */
+
+/* General settings styles */
+.github-tracker {
+	--info-text-font-size: 12px;
+	--info-text-margin-top: -3px;
+	--warning-color: red;
+	--standard-gap: 10px;
+	--small-gap: 5px;
+	--standard-divider-margin: 1px 2px;
+}
+
+/* Ribbon icon */
+.github-tracker-ribbon-class {
+	/* Custom styles for the ribbon icon */
+}
+
+/* Settings tab styles */
+.github-tracker-repo-settings {
+	margin-bottom: 15px;
+	margin-top: 15px;
+}
+
+.github-tracker[data-repo-name] {
+	/* Repository-specific styles can be added here */
+}
+
+/* Repository header styles */
+.github-tracker .repo-header {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	margin-bottom: 0.5em;
+	margin-top: 25px;
+}
+
+.github-tracker .repo-header h3 {
+	margin-bottom: 0;
+}
+
+.github-tracker .repo-header button {
+	margin-top: 12px;
+}
+
+/* Repository list styles */
+.github-tracker-item {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	padding: 8px;
+	border-bottom: 1px solid var(--background-modifier-border);
+}
+
+/* Settings sections */
+.github-tracker-settings-section {
+	margin-bottom: 10px;
+}
+
+.github-tracker-settings-group {
+	margin-left: 20px;
+}
+
+/* Show/hide for settings groups based on toggle state */
+.github-tracker-settings-hidden {
+	display: none;
+}
+
+.github-tracker-settings-visible {
+	display: block;
+}
+
+/* Information text styles */
+.github-tracker-info-text {
+	font-size: 10px;
+	margin-top: var(--info-text-margin-top);
+	color: var(--text-muted);
+}
+
+.github-tracker-warning-text {
+	color: var(--warning-color);
+}
+
+/* Link styles */
+.github-tracker-info-link {
+	font-size: var(--info-text-font-size);
+	color: var(--text-muted);
+	text-decoration: underline;
+	cursor: pointer;
+}
+
+/* Button containers */
+.github-tracker-button-container {
+	display: flex;
+	justify-content: flex-end;
+	gap: var(--standard-gap);
+	margin-top: 20px;
+}
+
+/* Repository buttons container */
+.github-tracker-buttons-container {
+	display: flex;
+	flex-direction: row;
+	gap: var(--standard-gap);
+	margin-bottom: 10px;
+}
+
+/* Repository form styles */
+.github-tracker-form-container {
+	display: flex;
+	flex-direction: column;
+	gap: var(--standard-gap);
+	margin-top: 10px;
+}
+
+/* Tabs container */
+.github-tracker-tabs-container {
+	display: flex;
+	gap: var(--standard-gap);
+	margin-bottom: 10px;
+}
+
+/* Manual form styles */
+.github-tracker-manual-form-container {
+	display: flex;
+	flex-direction: column;
+	gap: var(--standard-gap);
+}
+
+/* Repository container in modal */
+.github-tracker-container {
+	display: flex;
+	flex-direction: column;
+	gap: var(--small-gap);
+}
+
+/* GitHub repository list */
+.github-tracker-list {
+	max-height: 400px;
+	overflow-y: auto;
+}
+
+/* Tab content containers */
+.github-tracker-tab-content {
+	display: none;
+}
+
+.github-tracker-tab-content.active {
+	display: block;
+}
+
+/* Small dividers */
+.github-tracker-small-divider {
+	margin: var(--standard-divider-margin);
+}
+
+/* Confirmation modal styling */
+github-tracker-confirmation-modal .warning-text {
+	color: var(--warning-color);
+	font-weight: bold;
+	margin-bottom: 15px;
+}
+
+/* Additional classes for settings tab */
+.github-tracker-hidden {
+	display: none;
+}
+
+.github-tracker-visible {
+	display: block;
+}
+
+.github-tracker-visible-flex {
+	display: flex;
+}
