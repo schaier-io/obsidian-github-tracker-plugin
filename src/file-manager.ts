@@ -76,29 +76,23 @@ export class FileManager {
       // Check assignee requirement
       if (repo.requireAssignee) {
         const assigneeNames = issue.assignees?.map((a: { login: string }) => a.login) || [];
-        if (assigneeNames.length === 0) {
-          return false;
-        }
-        if (repo.assigneeMatch && !assigneeNames.some(
+        if (repo.assigneeMatch &&assigneeNames.length>0 && assigneeNames.some(
           (name: string) => name.toLowerCase() === repo.assigneeMatch.toLowerCase()
         )) {
-          return false;
+          return true;
         }
       }
       
       // Check opened by requirement
       if (repo.requireOpenedByIssue) {
-        if (!issue.user || !issue.user.login) {
-          return false;
-        }
-        
-        if (repo.openedByIssueMatch && 
-            issue.user.login.toLowerCase() !== repo.openedByIssueMatch.toLowerCase()) {
-          return false;
+      
+        if (repo.openedByIssueMatch && issue.user.login &&issue.user  &&
+            issue.user.login.toLowerCase() == repo.openedByIssueMatch.toLowerCase()) {
+          return true;
         }
       }
       
-      return true;
+      return false;
     });
   }
   
@@ -116,43 +110,28 @@ export class FileManager {
       // Check reviewer requirement
       if (repo.requireReviewer) {
         const reviewerNames = pr.requested_reviewers?.map((r: { login: string }) => r.login) || [];
-        if (reviewerNames.length === 0) {
-          return false;
-        }
-        if (repo.reviewerMatch) {
-          if (!reviewerNames.some((name: string) => name.toLowerCase() === repo.reviewerMatch.toLowerCase())) {
-            return false;
-          }
+        if (repo.reviewerMatch && reviewerNames.length>0 && reviewerNames.some((name: string) => name.toLowerCase() === repo.reviewerMatch.toLowerCase())) {
+          return true;
         }
       }
       
       // Check assignee requirement
       if (repo.requirePullRequestAssignee) {
         const assigneeNames = pr.assignees?.map((a: { login: string }) => a.login) || [];
-        if (assigneeNames.length === 0) {
-          return false;
-        }
-        if (repo.pullRequestAssigneeMatch) {
-          if (!assigneeNames.some((name: string) => 
-            name.toLowerCase() === repo.pullRequestAssigneeMatch.toLowerCase())) {
-            return false;
-          }
+        if (repo.pullRequestAssigneeMatch && assigneeNames.length>0 && assigneeNames.some((name: string) => name.toLowerCase() === repo.pullRequestAssigneeMatch.toLowerCase())) {
+          return true;
         }
       }
       
       // Check opened by requirement
       if (repo.requireOpenedByPR) {
-        if (!pr.user || !pr.user.login) {
-          return false;
-        }
-        
-        if (repo.openedByPRMatch && 
-            pr.user.login.toLowerCase() !== repo.openedByPRMatch.toLowerCase()) {
-          return false;
+        if (repo.openedByPRMatch && pr.user.login && pr.user &&
+            pr.user.login.toLowerCase() == repo.openedByPRMatch.toLowerCase()) {
+          return true;
         }
       }
       
-      return true;
+      return false;
     });
   }
   
