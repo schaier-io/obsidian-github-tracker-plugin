@@ -36,9 +36,6 @@ export default class GitHubTrackerPlugin extends Plugin {
 	async onload() {
 		await this.loadSettings();
 		
-		// Add plugin class to body for CSS scoping
-		document.body.classList.add('github-tracker');
-		
 		// Initialize notice manager first
 		this.noticeManager = new NoticeManager(this.settings);
 		
@@ -85,16 +82,10 @@ export default class GitHubTrackerPlugin extends Plugin {
 		// Add settings tab
 		this.addSettingTab(new GitHubTrackerSettingTab(this.app, this));
 
-		// Register DOM event to check clicks
-		this.registerDomEvent(document, "click", (evt: MouseEvent) => {
-		});
-
 	}
 
 	onunload() {
 		this.gitHubClient?.dispose();
-		// Remove plugin class from body
-		document.body.classList.remove('github-tracker');
 	}
 
 	async loadSettings() {

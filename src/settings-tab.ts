@@ -12,8 +12,6 @@ export class GitHubTrackerSettingTab extends PluginSettingTab {
 
     containerEl.empty();
     containerEl.addClass("github-tracker");
-    
-    new Setting(containerEl).setName("GitHub Tracker").setHeading();
 
     new Setting(containerEl)
       .setName("GitHub token")
@@ -47,7 +45,7 @@ export class GitHubTrackerSettingTab extends PluginSettingTab {
       );
 
     new Setting(containerEl)
-      .setName("Sync Notice Mode")
+      .setName("Sync notice mode")
       .setDesc("Control the level of notifications shown during sync")
       .addDropdown((dropdown) => {
         dropdown
@@ -63,7 +61,7 @@ export class GitHubTrackerSettingTab extends PluginSettingTab {
       });
 
     new Setting(containerEl)
-      .setName("Date Format")
+      .setName("Date format")
       .setDesc(
         "Format for dates in issue files (e.g., yyyy-MM-dd HH:mm:ss)"
       )
@@ -78,7 +76,7 @@ export class GitHubTrackerSettingTab extends PluginSettingTab {
       );
 
     new Setting(containerEl)
-      .setName("Body Content Escaping")
+      .setName("Body content escaping")
       .setDesc("Choose how to handle Templater, Dataview and other plugin escaping in issue and pull request bodies.")
       .addDropdown((dropdown) =>
         dropdown
@@ -152,7 +150,7 @@ export class GitHubTrackerSettingTab extends PluginSettingTab {
 
     // Add external repository button
     new Setting(repoContainer)
-      .setName("Add Repository")
+      .setName("Add repository")
       .setDesc("Add a repository from GitHub or manually")
       .addButton((button) => {
         button.setButtonText("Add");
@@ -164,7 +162,7 @@ export class GitHubTrackerSettingTab extends PluginSettingTab {
     // Add search filter
     const searchContainer = repoContainer.createDiv();
     new Setting(searchContainer)
-      .setName("Search Repositories")
+      .setName("Search repositories")
       .setDesc("Filter repositories by name or owner")
       .addText((text) =>
         text
@@ -203,7 +201,7 @@ export class GitHubTrackerSettingTab extends PluginSettingTab {
   
   private showAddRepositoryModal(): void {
     const modal = new Modal(this.app);
-    modal.titleEl.setText("Add Repository");
+    modal.titleEl.setText("Add repository");
     
     // Create form container
     const formContainer = modal.contentEl.createDiv();
