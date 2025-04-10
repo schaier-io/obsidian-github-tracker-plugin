@@ -32,6 +32,12 @@ If your plugin does not need CSS, delete this file.
 	margin-bottom: 15px;
 	margin-top: 15px;
 }
+.github-tracker-tracked-item {
+	margin-bottom: 10px;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+}
 
 .github-tracker[data-repo-name] {
 	/* Repository-specific styles can be added here */
@@ -106,6 +112,43 @@ If your plugin does not need CSS, delete this file.
 	justify-content: flex-end;
 	gap: var(--standard-gap);
 	margin-top: 20px;
+	padding-top: 10px;
+	border-top: 1px solid var(--background-modifier-border);
+}
+
+.github-tracker-button-container button {
+	min-width: 100px;
+	padding: 8px 16px;
+	border-radius: 4px;
+	font-weight: 500;
+	transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.github-tracker-button-container button.mod-cta {
+	background-color: var(--interactive-accent);
+	color: var(--text-on-accent);
+}
+
+.github-tracker-button-container button.mod-cta:hover {
+	background-color: var(--interactive-accent-hover);
+}
+
+.github-tracker-button-container button.mod-warning {
+	background-color: var(--text-error);
+	color: var(--text-on-accent);
+}
+
+.github-tracker-button-container button.mod-warning:hover {
+	background-color: var(--text-error-hover);
+}
+
+.github-tracker-button-container button:not(.mod-cta):not(.mod-warning) {
+	background-color: var(--background-modifier-border);
+	color: var(--text-normal);
+}
+
+.github-tracker-button-container button:not(.mod-cta):not(.mod-warning):hover {
+	background-color: var(--background-modifier-border-hover);
 }
 
 /* Repository buttons container */
@@ -183,4 +226,19 @@ github-tracker-confirmation-modal .warning-text {
 
 .github-tracker-visible-flex {
 	display: flex;
+}
+
+.github-tracker-manually-tracked-section {
+	margin-top: var(--standard-gap);
+	margin-bottom: var(--standard-gap);
+}
+
+.github-tracker-manually-tracked-section h4 {
+	margin-bottom: var(--standard-gap);
+}
+
+.github-tracker-divider {
+	margin: var(--standard-gap) 0;
+	border: none;
+	border-top: 1px solid var(--background-modifier-border);
 }

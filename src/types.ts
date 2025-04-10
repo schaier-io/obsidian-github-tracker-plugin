@@ -32,6 +32,8 @@ export interface GitHubTrackerSettings {
 	syncNoticeMode: "minimal" | "normal" | "extensive" | "debug";
 	syncInterval: number;
 	escapeMode: "disabled" | "normal" | "strict" | "veryStrict";
+	manuallyTrackedIssues: { repo: string; number: string }[];
+	manuallyTrackedPullRequests: { repo: string; number: string }[];
 }
 
 export const DEFAULT_SETTINGS: GitHubTrackerSettings = {
@@ -42,6 +44,8 @@ export const DEFAULT_SETTINGS: GitHubTrackerSettings = {
 	syncNoticeMode: "normal",
 	syncInterval: 0,
 	escapeMode: "strict",
+	manuallyTrackedIssues: [],
+	manuallyTrackedPullRequests: [],
 };
 
 // Default repository tracking settings

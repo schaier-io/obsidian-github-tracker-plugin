@@ -186,9 +186,115 @@ export class GitHubTrackerSettingTab extends PluginSettingTab {
 
 		// Add repository list
 		const repoContainer = containerEl.createDiv();
+		new Setting(repoContainer)
+			.setName("Manually Tracked Items")
+			.setHeading();
+		// Add manually track item button
+		new Setting(repoContainer)
+			.setName("Manually track item")
+			.setDesc("Add a specific issue or pull request to track by URL")
+			.addButton((button) => {
+				button.setButtonText("Add");
+				button.onClick(async () => {
+					this.showParseUrlModal();
+				});
+			});
 
+		// Add manually tracked issues section
+		const manuallyTrackedIssuesContainer = repoContainer.createDiv(
+			"github-tracker-manually-tracked-section"
+		);
+		manuallyTrackedIssuesContainer.createEl("h4", {
+			text: "Manually Tracked Issues",
+		});
+
+		// Get all manually tracked issues
+		const allManuallyTrackedIssues =
+			this.plugin.settings.manuallyTrackedIssues;
+
+		if (allManuallyTrackedIssues.length > 0) {
+			const issuesList = manuallyTrackedIssuesContainer.createEl("ul");
+			issuesList.addClass("github-tracker-tracked-list");
+
+			for (const issue of allManuallyTrackedIssues) {
+				const issueItem = issuesList.createEl("li");
+				issueItem.addClass("github-tracker-tracked-item");
+
+				const issueLink = issueItem.createEl("a");
+				issueLink.href = `https://github.com/${issue.repo}/issues/${issue.number}`;
+				issueLink.target = "_blank";
+				issueLink.setText(`Issue #${issue.number} (${issue.repo})`);
+
+				const removeButton = issueItem.createEl("button");
+				removeButton.setText("Remove");
+				removeButton.addClass("mod-warning");
+				removeButton.onclick = async () => {
+					this.plugin.settings.manuallyTrackedIssues =
+						this.plugin.settings.manuallyTrackedIssues.filter(
+							(i) =>
+								!(
+									i.repo === issue.repo &&
+									i.number === issue.number
+								)
+						);
+					await this.plugin.saveSettings();
+					this.display();
+				};
+			}
+		} else {
+			const noIssuesText = manuallyTrackedIssuesContainer.createEl("p");
+			noIssuesText.setText("No manually tracked issues");
+			noIssuesText.addClass("github-tracker-info-text");
+		}
+
+		// Add manually tracked pull requests section
+		const manuallyTrackedPRsContainer = repoContainer.createDiv(
+			"github-tracker-manually-tracked-section"
+		);
+		const manuallyTrackedPRsHeading = manuallyTrackedPRsContainer.createEl(
+			"h4",
+			{
+				text: "Manually Tracked Pull Requests",
+			}
+		);
+		manuallyTrackedPRsHeading.addClass("github-tracker-heading");
+
+		// Get all manually tracked pull requests
+		const allManuallyTrackedPRs =
+			this.plugin.settings.manuallyTrackedPullRequests;
+
+		if (allManuallyTrackedPRs.length > 0) {
+			const prsList = manuallyTrackedPRsContainer.createEl("ul");
+			prsList.addClass("github-tracker-tracked-list");
+
+			for (const pr of allManuallyTrackedPRs) {
+				const prItem = prsList.createEl("li");
+				prItem.addClass("github-tracker-tracked-item");
+
+				const prLink = prItem.createEl("a");
+				prLink.href = `https://github.com/${pr.repo}/pull/${pr.number}`;
+				prLink.target = "_blank";
+				prLink.setText(`Pull Request #${pr.number} (${pr.repo})`);
+
+				const removeButton = prItem.createEl("button");
+				removeButton.setText("Remove");
+				removeButton.addClass("mod-warning");
+				removeButton.onclick = async () => {
+					this.plugin.settings.manuallyTrackedPullRequests =
+						this.plugin.settings.manuallyTrackedPullRequests.filter(
+							(p) =>
+								!(p.repo === pr.repo && p.number === pr.number)
+						);
+					await this.plugin.saveSettings();
+					this.display();
+				};
+			}
+		} else {
+			const noPRsText = manuallyTrackedPRsContainer.createEl("p");
+			noPRsText.setText("No manually tracked pull requests");
+			noPRsText.addClass("github-tracker-info-text");
+		}
 		new Setting(repoContainer).setName("Repositories").setHeading();
-
 		// Add external repository button
 		new Setting(repoContainer)
 			.setName("Add repository")
@@ -991,5 +1097,244 @@ export class GitHubTrackerSettingTab extends PluginSettingTab {
 			"github-tracker-settings-hidden",
 			!repo.requirePullRequestLabel
 		);
+	}
+
+	private showParseUrlModal(): void {
+		const modal = new Modal(this.app);
+		modal.titleEl.setText("Parse GitHub URL");
+
+		const formContainer = modal.contentEl.createDiv();
+		formContainer.addClass("github-tracker-form-container");
+
+		// Add URL input
+		const urlContainer = formContainer.createDiv();
+		urlContainer.addClass("github-tracker-container");
+		urlContainer.createEl("label", { text: "GitHub URL" });
+		const urlInput = urlContainer.createEl("input");
+		urlInput.type = "text";
+		urlInput.placeholder =
+			"https://github.com/owner/repo/issues/123 or https://github.com/owner/repo/pull/123";
+
+		// Add buttons container
+		const buttonContainer = formContainer.createDiv();
+		buttonContainer.addClass("github-tracker-button-container");
+
+		// Add Cancel button
+		const cancelButton = buttonContainer.createEl("button");
+		cancelButton.setText("Cancel");
+		cancelButton.onclick = () => modal.close();
+
+		// Add Parse button
+		const parseButton = buttonContainer.createEl("button");
+		parseButton.setText("Add");
+		parseButton.onclick = async () => {
+			const url = urlInput.value.trim();
+			if (!url) {
+				new Notice("Please enter a GitHub URL");
+				return;
+			}
+
+			try {
+				// Validate URL format
+				let urlObj: URL;
+				try {
+					urlObj = new URL(url);
+				} catch (e) {
+					new Notice("Please enter a valid URL");
+					return;
+				}
+
+				// Validate GitHub URL
+				if (
+					!urlObj.hostname ||
+					!urlObj.hostname.includes("github.com")
+				) {
+					new Notice("Please enter a valid GitHub URL");
+					return;
+				}
+
+				const pathParts = urlObj.pathname.split("/").filter(Boolean);
+				if (pathParts.length < 4) {
+					new Notice(
+						"Invalid GitHub URL format. Expected format: https://github.com/owner/repo/issues/123 or https://github.com/owner/repo/pull/123"
+					);
+					return;
+				}
+
+				const owner = pathParts[0];
+				const repo = pathParts[1];
+				const type = pathParts[2]; // "issues" or "pull"
+				const number = pathParts[3];
+
+				if (type !== "issues" && type !== "pull") {
+					new Notice("URL must be for an issue or pull request");
+					return;
+				}
+
+				const repoName = `${owner}/${repo}`;
+				const repoConfig = this.plugin.settings.repositories.find(
+					(r) => r.repository === repoName
+				);
+
+				if (!repoConfig) {
+					// Show confirmation modal to add repository
+					const confirmModal = new Modal(this.app);
+					confirmModal.titleEl.setText("Repository Not Found");
+					confirmModal.contentEl.setText(
+						`Repository ${repoName} is not tracked. Would you like to add it now?`
+					);
+
+					const confirmButtonContainer =
+						confirmModal.contentEl.createDiv();
+					confirmButtonContainer.addClass(
+						"github-tracker-button-container"
+					);
+
+					const cancelButton =
+						confirmButtonContainer.createEl("button");
+					cancelButton.setText("Cancel");
+					cancelButton.onclick = () => {
+						confirmModal.close();
+						modal.close();
+					};
+
+					const addButton = confirmButtonContainer.createEl("button");
+					addButton.setText("Add Repository");
+					addButton.addClass("mod-cta");
+					addButton.onclick = async () => {
+						confirmModal.close();
+						modal.close();
+						await this.addRepository(repoName);
+						this.showParseUrlModal(); // Reopen the URL parsing modal
+					};
+
+					confirmModal.open();
+					return;
+				}
+
+				// Check if tracking is enabled for the specific item type
+				if (type === "issues" && !repoConfig.trackIssues) {
+					const confirmModal = new Modal(this.app);
+					confirmModal.titleEl.setText("Issue Tracking Disabled");
+					confirmModal.contentEl.setText(
+						`Issue tracking is disabled for ${repoName}. Would you like to enable it?`
+					);
+
+					const confirmButtonContainer =
+						confirmModal.contentEl.createDiv();
+					confirmButtonContainer.addClass(
+						"github-tracker-button-container"
+					);
+
+					const cancelButton =
+						confirmButtonContainer.createEl("button");
+					cancelButton.setText("Cancel");
+					cancelButton.onclick = () => {
+						confirmModal.close();
+						modal.close();
+					};
+
+					const enableButton =
+						confirmButtonContainer.createEl("button");
+					enableButton.setText("Enable Issue Tracking");
+					enableButton.addClass("mod-cta");
+					enableButton.onclick = async () => {
+						repoConfig.trackIssues = true;
+						await this.plugin.saveSettings();
+						confirmModal.close();
+						this.showParseUrlModal(); // Reopen the URL parsing modal
+					};
+
+					confirmModal.open();
+					return;
+				}
+
+				if (type === "pull" && !repoConfig.trackPullRequest) {
+					const confirmModal = new Modal(this.app);
+					confirmModal.titleEl.setText(
+						"Pull Request Tracking Disabled"
+					);
+					confirmModal.contentEl.setText(
+						`Pull request tracking is disabled for ${repoName}. Would you like to enable it?`
+					);
+
+					const confirmButtonContainer =
+						confirmModal.contentEl.createDiv();
+					confirmButtonContainer.addClass(
+						"github-tracker-button-container"
+					);
+
+					const cancelButton =
+						confirmButtonContainer.createEl("button");
+					cancelButton.setText("Cancel");
+					cancelButton.onclick = () => {
+						confirmModal.close();
+						modal.close();
+					};
+
+					const enableButton =
+						confirmButtonContainer.createEl("button");
+					enableButton.setText("Enable Pull Request Tracking");
+					enableButton.addClass("mod-cta");
+					enableButton.onclick = async () => {
+						repoConfig.trackPullRequest = true;
+						await this.plugin.saveSettings();
+						confirmModal.close();
+						this.showParseUrlModal(); // Reopen the URL parsing modal
+					};
+
+					confirmModal.open();
+					return;
+				}
+
+				// Add to the appropriate array
+				if (type === "issues") {
+					const issueExists =
+						this.plugin.settings.manuallyTrackedIssues.some(
+							(i) => i.repo === repoName && i.number === number
+						);
+
+					if (!issueExists) {
+						this.plugin.settings.manuallyTrackedIssues.push({
+							repo: repoName,
+							number: number,
+						});
+						await this.plugin.saveSettings();
+						new Notice(
+							`Added issue #${number} to manually tracked issues`
+						);
+					} else {
+						new Notice(`Issue #${number} is already being tracked`);
+					}
+				} else {
+					const prExists =
+						this.plugin.settings.manuallyTrackedPullRequests.some(
+							(p) => p.repo === repoName && p.number === number
+						);
+
+					if (!prExists) {
+						this.plugin.settings.manuallyTrackedPullRequests.push({
+							repo: repoName,
+							number: number,
+						});
+						await this.plugin.saveSettings();
+						new Notice(
+							`Added pull request #${number} to manually tracked pull requests`
+						);
+					} else {
+						new Notice(
+							`Pull request #${number} is already being tracked`
+						);
+					}
+				}
+
+				modal.close();
+				this.display(); // Refresh the settings view to show the new item
+			} catch (error) {
+				new Notice(`Error parsing URL: ${(error as Error).message}`);
+			}
+		};
+
+		modal.open();
 	}
 }
