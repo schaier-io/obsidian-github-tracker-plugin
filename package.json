@@ -35,5 +35,14 @@
 	"dependencies": {
 		"date-fns": "^4.4.0",
 		"octokit": "^5.0.5"
+	},
+	"overrides": {
+		"glob": "^14.0.4",
+		"test-exclude": {
+			"minimatch": "^11.0.6"
+		},
+		"@typescript-eslint/typescript-estree": {
+			"minimatch": "^11.0.6"
+		}
 	}
 }
